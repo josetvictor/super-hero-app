@@ -1,0 +1,14 @@
+### hello world
+GET http://localhost:3000
+
+### singIn
+POST http://localhost:3000/auth/login
+
+{
+  username: "john",
+  password: "senha"
+}
+
+### profile
+GET http://localhost:3000/auth/profile/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MTQ3NjgwNjcsImV4cCI6MTcxNDc2ODEyN30.CfWk2kkfBCLZ9YdNJbWPXrQjwam9udDUglAeB8D0EW0
