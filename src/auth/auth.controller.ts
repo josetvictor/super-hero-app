@@ -3,21 +3,20 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('users')
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
-  @Post('login')
+  @Post('singin')
   singIn(@Body() singInDto: Record<string, any>){
     return this.authService.singIn(singInDto.username, singInDto.password);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('profile/:id')
-  async getProfile(@Request() request){
-    var result = await this.authService.detailsUser(request.user.id);
-    return result; 
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  logOut(@Body() singInDto: Record<string, any>){
+    return this.authService.logout(singInDto.username);
   }
 }

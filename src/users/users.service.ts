@@ -1,30 +1,48 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { ConflictException, Injectable } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { User } from './users.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UsersService {
-  @InjectRepository(User)
-  private usersRepository: Repository<User>
+  constructor(
+    @InjectRepository(User)
+    private readonly repository: Repository<User>
+  ) { }
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async create(createUserDto: CreateUserDto) {
+      const userExist = await this.repository.findOneBy({ username: createUserDto.username });
+
+      if (userExist) throw new ConflictException(null, 'User already exists!');
+
+      const user = this.repository.create(createUserDto);
+      return this.repository.save(user);
   }
 
-  findOne(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+  findAll() {
+    return this.repository.find();
   }
 
-  async findOneByUsername(username: string): Promise<User | null> {
-    return await this.usersRepository.findOneBy({ username });
+  findOne(id: number) {
+    return this.repository.findOneBy({ id });
   }
 
-  async insert(user: User): Promise<User> {
-    return await this.usersRepository.save(user);
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.repository.findOneBy({ id });
+
+    if (!user) return null;
+
+    this.repository.merge(user, updateUserDto);
+    return this.repository.save(user);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+  async remove(id: number) {
+    const user = await this.repository.findOneBy({ id });
+
+    if (!user) return null;
+
+    return this.repository.remove(user);
   }
 }
