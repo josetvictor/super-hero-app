@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthGuard } from './auth.guard';
+import { AuthService } from '../application/auth/auth.service';
+import { AuthGuard } from '../application/auth/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('auth')

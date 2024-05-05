@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpCode, ConflictException } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpCode, BadRequestException } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { UsersService } from 'src/application/users/users.service';
+import { CreateUserDto } from 'src/domain/dtos/create-user.dto';
+import { UpdateUserDto } from 'src/domain/dtos/update-user.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -12,13 +12,16 @@ export class UsersController {
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
       const result = await this.usersService.create(createUserDto);
+      
+      if (!result) throw new BadRequestException();
 
-      return result;
+      const { password, ...rest } = result;
+      return rest;
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    return await this.usersService.findAll();
   }
 
   @Get(':id')
