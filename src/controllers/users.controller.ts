@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpCode, BadRequestException } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from 'src/application/users/users.service';
-import { CreateUserDto } from 'src/domain/dtos/create-user.dto';
-import { UpdateUserDto } from 'src/domain/dtos/update-user.dto';
+import { CreateUserDto } from 'src/domain/dtos/user/create-user.dto';
+import { UpdateUserDto } from 'src/domain/dtos/user/update-user.dto';
 
 @ApiTags('Users')
 @Controller('users')

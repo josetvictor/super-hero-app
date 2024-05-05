@@ -1,5 +1,8 @@
 import { registerAs } from '@nestjs/config';
 import { config as dotenvConfig } from 'dotenv';
+import { AttributeHero } from 'src/domain/entities/attributeHero.entity';
+import { Hero } from 'src/domain/entities/hero.entity';
+import { PowerHero } from 'src/domain/entities/powerHero.entity';
 import { User } from 'src/domain/entities/user.entity';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
@@ -14,7 +17,10 @@ const config = {
     database: `${process.env.DATABASE_NAME}`,
     // entities: [`${__dirname}/domain/entities/*.entity{.ts,.js}`],
     entities: [
-        User
+        User,
+        Hero,
+        AttributeHero,
+        PowerHero
     ],
     migrations: [`${__dirname}/migrations/*{.ts,.js}`],
     autoLoadEntities: false,

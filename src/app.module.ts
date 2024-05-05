@@ -5,12 +5,16 @@ import typeorm from './config/typeorm';
 
 import { 
   UsersController,
-  AuthController
+  AuthController,
+  HeroController,
+  AttributeController,
+  PowerController,
 } from './controllers';
 
 import { 
   UsersModule,
-  AuthModule
+  AuthModule,
+  HeroModule,
  } from './application';
 import { FrameworksModule } from './frameworks/frameworks.module';
 
@@ -24,13 +28,17 @@ import { FrameworksModule } from './frameworks/frameworks.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => (configService.get('typeorm'))
     }),
+    FrameworksModule,
     AuthModule,
     UsersModule,
-    FrameworksModule,
+    HeroModule,
   ],
   controllers: [
     UsersController,
-    AuthController
+    AuthController,
+    HeroController,
+    AttributeController,
+    PowerController
   ],
   providers: [],
 })

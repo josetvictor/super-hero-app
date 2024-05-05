@@ -17,6 +17,9 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('auth')
     .addTag('Users')
+    .addTag('Heros')
+    .addTag('Attributes')
+    .addTag('Powers')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
