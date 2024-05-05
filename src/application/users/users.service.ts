@@ -27,7 +27,9 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.repository.find();
+    return await this.repository.find({
+      where: { isActive: true },
+    });
   }
 
   async findOne(id: number) {
@@ -52,7 +54,9 @@ export class UsersService {
 
     if (!user) return null;
 
-    return this.repository.remove(user);
+    user.isActive = false;
+
+    return this.repository.save(user);
   }
 
   async findOneByEmail(email: string) {
