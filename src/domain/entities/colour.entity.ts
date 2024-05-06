@@ -3,7 +3,7 @@ import { SuperHero } from "./superhero.entity";
 
 @Entity()
 export class Colour {
-    @PrimaryGeneratedColumn('identity')
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column({length: 20 ,default: null})

@@ -3,7 +3,7 @@ import { SuperHero } from "./superhero.entity";
 
 @Entity()
 export class Race {
-    @PrimaryGeneratedColumn('identity')
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column({length: 100, default: null})

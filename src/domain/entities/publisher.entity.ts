@@ -3,7 +3,7 @@ import { SuperHero } from "./superhero.entity";
 
 @Entity()
 export class Publisher {
-    @PrimaryGeneratedColumn('identity')
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column({length: 50, default: null})

@@ -3,7 +3,7 @@ import { HeroAttribute } from "./heroAttribute.entity";
 
 @Entity()
 export class Attribute {
-    @PrimaryGeneratedColumn('identity')
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column({length: 200, default: null})

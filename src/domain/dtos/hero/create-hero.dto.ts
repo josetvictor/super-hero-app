@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, ValidateIf } from "class-validator";
 
 export class CreateHeroDto {
 
@@ -9,25 +9,32 @@ export class CreateHeroDto {
     full_name: string;
 
     @IsNumber()
-    gender_id: number;
+    @ValidateIf((object, value) => value !== null)
+    gender_id!: number | null;
 
     @IsNumber()
-    eye_colour_id: number;
+    @ValidateIf((object, value) => value !== null)
+    eye_colour_id!: number | null;
 
     @IsNumber()
-    hair_colour_id: number;
+    @ValidateIf((object, value) => value !== null)
+    hair_colour_id!: number | null;
 
     @IsNumber()
-    skin_colour_id: number;
+    @ValidateIf((object, value) => value !== null)
+    skin_colour_id!: number | null;
 
     @IsNumber()
-    race_id: number;
+    @ValidateIf((object, value) => value !== null)
+    race_id!: number | null;
 
     @IsNumber()
-    publisher_id: number;
+    @ValidateIf((object, value) => value !== null)
+    publisher_id!: number | null;
 
     @IsNumber()
-    alignment_id: number;
+    @ValidateIf((object, value) => value !== null)
+    alignment_id!: number | null;
 
     @IsNumber()
     height_cm: number;

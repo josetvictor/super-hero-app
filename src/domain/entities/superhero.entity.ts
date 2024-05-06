@@ -8,7 +8,7 @@ import { HeroAttribute } from "./heroAttribute.entity";
 
 @Entity('superhero')
 export class SuperHero {
-    @PrimaryGeneratedColumn('identity')
+    @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column({length: 200, default: null})
