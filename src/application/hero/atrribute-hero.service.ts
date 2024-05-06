@@ -2,22 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAttributeDto } from 'src/domain/dtos/hero/create-attribute.dto';
 import { UpdateAttributeDto } from 'src/domain/dtos/hero/update-attribute.dto';
-import { AttributeHero } from 'src/domain/entities/attributeHero.entity';
+import { Attribute } from 'src/domain/entities/attribute.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class AtrributeHeroService {
     constructor(
-        @InjectRepository(AttributeHero)
-        private readonly repository: Repository<AttributeHero>
+        @InjectRepository(Attribute)
+        private readonly repository: Repository<Attribute>
     ) { }
 
 
-    async findAll(): Promise<AttributeHero[]> {
+    async findAll(): Promise<Attribute[]> {
         return await this.repository.find();
     }
 
-    async findOne(id: number): Promise<AttributeHero> {
+    async findOne(id: number): Promise<Attribute> {
         const hero = await this.repository.findOneBy({ id });
         if (!hero) {
             throw new NotFoundException(`Attribute #${id} not found`);
@@ -25,13 +25,13 @@ export class AtrributeHeroService {
         return hero;
     }
 
-    async create(createAttributeDto: CreateAttributeDto): Promise<AttributeHero> {
+    async create(createAttributeDto: CreateAttributeDto): Promise<Attribute> {
         const hero = this.repository.create(createAttributeDto);
 
         return await this.repository.save(hero);
     }
 
-    async update(id: number, updateAttributeDto: UpdateAttributeDto): Promise<AttributeHero> {
+    async update(id: number, updateAttributeDto: UpdateAttributeDto): Promise<Attribute> {
         const hero = await this.repository.findOneBy({ id });
 
         if (!hero) return null;

@@ -59,11 +59,11 @@ export class UsersService {
     return this.repository.save(user);
   }
 
-  async findOneByEmail(email: string) {
+  async findOneByEmail(email: string): Promise<User> {
     return await this.repository.findOneBy({ email});
   }
 
-  async findOneByCpf(cpf: string) {
+  async findOneByCpf(cpf: string): Promise<User> {
     return await this.repository.findOneBy({ cpf });
   }
 }

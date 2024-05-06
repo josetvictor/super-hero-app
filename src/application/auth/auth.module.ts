@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
+import { FrameworksModule } from 'src/frameworks/frameworks.module';
 
 @Module({
   imports: [
     UsersModule,
+    FrameworksModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,

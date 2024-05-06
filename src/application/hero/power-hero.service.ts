@@ -2,22 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePowerDto } from 'src/domain/dtos/hero/create-power.dto';
 import { UpdatePowerDto } from 'src/domain/dtos/hero/update-power.dto';
-import { PowerHero } from 'src/domain/entities/powerHero.entity';
+import { SuperPower } from 'src/domain/entities/superpower.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class PowerHeroService {
     constructor(
-        @InjectRepository(PowerHero)
-        private readonly repository: Repository<PowerHero>
+        @InjectRepository(SuperPower)
+        private readonly repository: Repository<SuperPower>
     ) { }
 
 
-    async findAll(): Promise<PowerHero[]> {
+    async findAll(): Promise<SuperPower[]> {
         return await this.repository.find();
     }
 
-    async findOne(id: number): Promise<PowerHero> {
+    async findOne(id: number): Promise<SuperPower> {
         const hero = await this.repository.findOneBy({ id });
         if (!hero) {
             throw new NotFoundException(`Power #${id} not found`);
@@ -25,13 +25,13 @@ export class PowerHeroService {
         return hero;
     }
 
-    async create(createPowerDto: CreatePowerDto): Promise<PowerHero> {
+    async create(createPowerDto: CreatePowerDto): Promise<SuperPower> {
         const hero = this.repository.create(createPowerDto);
 
         return await this.repository.save(hero);
     }
 
-    async update(id: number, updatePowerDto: UpdatePowerDto): Promise<PowerHero> {
+    async update(id: number, updatePowerDto: UpdatePowerDto): Promise<SuperPower> {
         const hero = await this.repository.findOneBy({ id });
 
         if (!hero) return null;

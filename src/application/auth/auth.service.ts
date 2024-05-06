@@ -2,26 +2,41 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { AccessToken } from 'src/domain/dtos/user/accessToken.dto';
+import { User } from 'src/domain/entities/user.entity';
+import { BcryptService } from 'src/frameworks/bcrypt.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private readonly bcryptService: BcryptService
   ) {}
 
-  async singIn(email: string, password: string): Promise<AccessToken>{
-    const user = await this.userService.findOneByEmail(email);
+  async singIn(emailOrCpf: string, password: string): Promise<AccessToken>{
+    let user: User; 
+    let payload;
+    // Testa se o emailOrCpf é um número inteiro (contém apenas dígitos).
+    // Utiliza a expressão regular /^\d+$/ que procura a string começo (^) ate o final ($)
+    // de emailOrCpf, e se ela contém apenas dígitos (\d+)
+    const isCpf = (/^\d+$/).test(emailOrCpf) === null;
+    if(isCpf) {
+      user = await this.userService.findOneByCpf(emailOrCpf);
+      payload = { sub: user?.id, cpf: user?.cpf };
+    } else {
+      user = await this.userService.findOneByEmail(emailOrCpf);
+      payload = { sub: user?.id, email: user?.email };
+    }
     
     if(!user) {
       throw new NotFoundException();
     }
 
-    if((user?.password !== password)) {
+    const isPasswrod = await this.bcryptService.compare(password, user.password);
+    if(isPasswrod) {
       throw new UnauthorizedException();
     }
 
-    const payload = { sub: user?.id, username: user?.email };
     return {
       accessToken: await this.jwtService.signAsync(payload),
     };
