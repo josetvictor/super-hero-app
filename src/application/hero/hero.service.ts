@@ -2,14 +2,13 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateHeroDto } from 'src/domain/dtos/hero/create-hero.dto';
 import { UpdateHeroDto } from 'src/domain/dtos/hero/update-hero.dto';
+import { PaginateDto } from 'src/domain/dtos/paginate.dto';
 import { Alignment } from 'src/domain/entities/alignment.entity';
-import { Attribute } from 'src/domain/entities/attribute.entity';
 import { Colour } from 'src/domain/entities/colour.entity';
 import { Gender } from 'src/domain/entities/gender.entity';
 import { Publisher } from 'src/domain/entities/publisher.entity';
 import { Race } from 'src/domain/entities/race.entity';
 import { SuperHero } from 'src/domain/entities/superhero.entity';
-import { SuperPower } from 'src/domain/entities/superpower.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -30,14 +29,32 @@ export class HeroService {
     ) { }
 
 
-    async findAll(): Promise<SuperHero[]> {
-        var result = await this._repository.find();
+    async findAll(page: number, pageSize: number, orderBy: string): Promise<PaginateDto<SuperHero>> {
+        const [result, total] = await this._repository.findAndCount({
+            relations: {
+                alignment: true,
+                gender: true,
+                publisher: true,
+                race: true,
+                eye_colour: true,
+                hair_colour: true,
+                skin_colour: true
+            },
+            order: {
+                full_name: orderBy === 'ASC' ? 'ASC' : 'DESC'
+            },
+            skip: page,
+            take: pageSize
+        });
 
         if (!result) {
             throw new NotFoundException(`Hero not found`);
         }
         
-        return result;
+        return {
+            count: total,
+            data: result
+        };
     }
 
     async create(createHeroDto: CreateHeroDto): Promise<SuperHero> {
