@@ -9,7 +9,7 @@ export class SuperPower {
     @Column({ length: 200, nullable: true })
     powerName: string;
 
-    @ManyToMany(() => SuperHero, { cascade: true })
+    @ManyToOne(() => SuperHero, { cascade: true })
     @JoinTable({ name: 'hero_power' })
     superHeros: SuperHero[]
 }

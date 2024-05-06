@@ -1,6 +1,5 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Patch, Post, Query } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
-import { query } from "express";
+import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { HeroService } from "src/application/hero/hero.service";
 import { CreateHeroDto } from "src/domain/dtos/hero/create-hero.dto";
 import { UpdateHeroDto } from "src/domain/dtos/hero/update-hero.dto";
@@ -19,11 +18,18 @@ export class HeroController {
         return result;
     }
 
+    @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+    @ApiQuery({ name: 'pageSize', required: false, type: Number, example: 10 })
+    @ApiQuery({ name: 'order', required: false, type: String, example: 'ASC' })
+    @ApiQuery({ name: 'attributeId', required: false, type: Number })
+    @ApiQuery({ name: 'publisherId', required: false, type: Number })
     @Get()
     async findAll(
         @Query('page') page: number = 1,
         @Query('pageSize') pageSize: number = 10,
-        @Query('order') order: string = 'DESC'
+        @Query('order') order: string = 'DESC',
+        @Query('attributeId') attributeId?: number,
+        @Query('publisherId') publisherId?: number
     ) {
         return await this.heroService.findAll(page, pageSize, order);
     }

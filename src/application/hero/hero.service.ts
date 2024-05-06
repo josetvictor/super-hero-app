@@ -29,7 +29,29 @@ export class HeroService {
     ) { }
 
 
-    async findAll(page: number, pageSize: number, orderBy: string): Promise<PaginateDto<SuperHero>> {
+    async findAll(page: number, pageSize: number, orderBy: string, attributeId?: number, publisherId?: number): Promise<PaginateDto<SuperHero>> {
+        // Crie um objeto de filtro inicial
+        const where: any = {};
+
+        // Verifique se o parâmetro attributeId foi fornecido
+        if (attributeId !== undefined) {
+            // Se sim, adicione a condição correspondente à consulta
+            where.heroAttributes = {
+                attribute: {
+                    id: attributeId
+                }
+            };
+        }
+
+        // Verifique se o parâmetro publisherId foi fornecido
+        if (publisherId !== undefined) {
+            // Se sim, adicione a condição correspondente à consulta
+            where.publisher = {
+                id: publisherId
+            };
+        }
+
+        // Faça a consulta com as condições construídas dinamicamente
         const [result, total] = await this._repository.findAndCount({
             relations: {
                 alignment: true,
@@ -38,21 +60,26 @@ export class HeroService {
                 race: true,
                 eye_colour: true,
                 hair_colour: true,
-                skin_colour: true
+                skin_colour: true,
+                heroAttributes: true
             },
+            where: where,
             order: {
-                full_name: orderBy === 'ASC' ? 'ASC' : 'DESC'
+                heroAttributes: {
+                    value: orderBy === 'ASC' ? 'ASC' : 'DESC'
+                }
             },
-            skip: page,
+            skip: (page - 1) * pageSize, // Ajuste para calcular corretamente o skip
             take: pageSize
         });
 
         if (!result) {
             throw new NotFoundException(`Hero not found`);
         }
-        
+
         return {
             count: total,
+            totalPage: result.length,
             data: result
         };
     }
@@ -60,7 +87,7 @@ export class HeroService {
     async create(createHeroDto: CreateHeroDto): Promise<SuperHero> {
         const result = await this._repository.findOneBy({ superhero_name: createHeroDto.superhero_name });
 
-        if(result) throw new NotFoundException(`Hero #${createHeroDto.superhero_name} already exists`);
+        if (result) throw new NotFoundException(`Hero #${createHeroDto.superhero_name} already exists`);
 
         const hero = this._repository.create(createHeroDto);
 
@@ -78,9 +105,9 @@ export class HeroService {
     async update(id: number, updateHeroDto: UpdateHeroDto): Promise<SuperHero> {
         const hero = await this._repository.findOneBy({ id });
 
-        
+
         if (!hero) throw new BadRequestException("Hero not found");
-        
+
         if (updateHeroDto.alignmentId) hero.alignment = await this._alignmentRepository.findOneBy({ id: updateHeroDto.alignmentId });
         if (updateHeroDto.genderId) hero.gender = await this._genderRepository.findOneBy({ id: updateHeroDto.genderId });
         if (updateHeroDto.publisherId) hero.publisher = await this._publisherRepository.findOneBy({ id: updateHeroDto.publisherId });
@@ -88,7 +115,7 @@ export class HeroService {
         if (updateHeroDto.eyeColourId) hero.eye_colour = await this._colourRepository.findOneBy({ id: updateHeroDto.eyeColourId });
         if (updateHeroDto.hairColourId) hero.hair_colour = await this._colourRepository.findOneBy({ id: updateHeroDto.hairColourId });
         if (updateHeroDto.skinColourId) hero.skin_colour = await this._colourRepository.findOneBy({ id: updateHeroDto.skinColourId });
-        
+
         return this._repository.save(hero);
     }
 
