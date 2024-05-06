@@ -15,6 +15,7 @@ async function bootstrap() {
     .setTitle('Super Hero API')
     .setDescription('The super hero API description')
     .setVersion('1.0')
+    .addBearerAuth()
     .addTag('auth')
     .addTag('Users')
     .addTag('Heros')

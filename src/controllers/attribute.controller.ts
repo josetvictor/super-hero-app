@@ -1,12 +1,13 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Patch, Post, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { AtrributeHeroService } from "src/application/hero/atrribute-hero.service";
 import { CreateAttributeDto } from "src/domain/dtos/hero/create-attribute.dto";
 import { UpdateAttributeDto } from "src/domain/dtos/hero/update-attribute.dto";
 
 @UseGuards(AuthGuard('jwt'))
 @ApiTags('Attributes')
+@ApiBearerAuth()
 @Controller('Attributes')
 export class AttributeController {
     constructor(private readonly attributeService: AtrributeHeroService) { }

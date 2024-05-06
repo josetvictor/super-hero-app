@@ -1,11 +1,12 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Patch, Post, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { PowerHeroService } from "src/application/hero/power-hero.service";
 import { CreatePowerDto } from "src/domain/dtos/hero/create-power.dto";
 import { UpdatePowerDto } from "src/domain/dtos/hero/update-power.dto";
 
 @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 @ApiTags('Powers')
 @Controller('Power')
 export class PowerController {

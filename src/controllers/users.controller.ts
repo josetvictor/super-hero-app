@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpCode, BadRequestException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UsersService } from 'src/application/users/users.service';
 import { CreateUserDto } from 'src/domain/dtos/user/create-user.dto';
 import { UpdateUserDto } from 'src/domain/dtos/user/update-user.dto';
@@ -11,6 +11,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
       const result = await this.usersService.create(createUserDto);
@@ -34,6 +35,7 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const result = await this.usersService.update(+id, updateUserDto);
@@ -42,6 +44,7 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
   @Delete(':id')
   @HttpCode(204)
   async remove(@Param('id') id: string) {
