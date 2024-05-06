@@ -18,16 +18,9 @@ export class PowerController {
         return result;
     }
 
-    @Get()
-    async findAll() {
-        return await this.powerService.findAll();
-    }
-
     @Get(':id')
-    async findOne(@Param('id') id: string) {
-        const result = await this.powerService.findOne(+id);
-        if (!result) throw new NotFoundException();
-        return result;
+    async findAll(@Param('id') id: number) {
+        return await this.powerService.findAllPowerToHero(id);
     }
 
     @Patch(':id')

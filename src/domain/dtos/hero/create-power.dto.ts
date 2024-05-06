@@ -1,9 +1,13 @@
+import { IsNotEmpty, IsNumber } from "class-validator";
+import { IsNull } from "typeorm";
+
 export class CreatePowerDto {
-    id: number;
 
-    name: string;
+    @IsNumber()
+    @IsNotEmpty()
+    superpowerId: number;
 
-    level: number;
-
-    heroId: number;
+    @IsNumber()
+    @IsNotEmpty()
+    superheroId: number;
 }
