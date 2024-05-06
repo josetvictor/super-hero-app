@@ -1,6 +1,5 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from '../application/auth/auth.service';
-import { AuthGuard } from '../application/auth/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { SingInDto } from 'src/domain/dtos/auth/singin.dto';
 
@@ -16,8 +15,8 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('logout')
-  logOut(@Body() singInDto: Record<string, any>){
-    return this.authService.logout(singInDto.username);
+  @Post('refresh')
+  logOut(@Body() body){
+    return this.authService.reautenticar(body);
   }
 }

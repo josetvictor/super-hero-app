@@ -1,9 +1,11 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Patch, Post, Query } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { HeroService } from "src/application/hero/hero.service";
 import { CreateHeroDto } from "src/domain/dtos/hero/create-hero.dto";
 import { UpdateHeroDto } from "src/domain/dtos/hero/update-hero.dto";
 
+@UseGuards(AuthGuard('jwt'))
 @ApiTags('Heros')
 @Controller('Heros')
 export class HeroController {

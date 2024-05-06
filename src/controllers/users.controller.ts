@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpCode, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpCode, BadRequestException, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from 'src/application/users/users.service';
 import { CreateUserDto } from 'src/domain/dtos/user/create-user.dto';
@@ -9,6 +10,7 @@ import { UpdateUserDto } from 'src/domain/dtos/user/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
       const result = await this.usersService.create(createUserDto);
@@ -31,6 +33,7 @@ export class UsersController {
     return result;
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const result = await this.usersService.update(+id, updateUserDto);
@@ -38,6 +41,7 @@ export class UsersController {
     return result;
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   @HttpCode(204)
   async remove(@Param('id') id: string) {

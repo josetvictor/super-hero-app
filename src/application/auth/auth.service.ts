@@ -4,6 +4,7 @@ import { UsersService } from '../users/users.service';
 import { AccessToken } from 'src/domain/dtos/user/accessToken.dto';
 import { User } from 'src/domain/entities/user.entity';
 import { BcryptService } from 'src/frameworks/bcrypt.service';
+import { SingInDto } from 'src/domain/dtos/auth/singin.dto';
 
 @Injectable()
 export class AuthService {
@@ -11,39 +12,91 @@ export class AuthService {
     private userService: UsersService,
     private jwtService: JwtService,
     private readonly bcryptService: BcryptService
-  ) {}
+  ) { }
 
-  async singIn(emailOrCpf: string, password: string): Promise<AccessToken>{
-    let user: User; 
-    let payload;
-    // Testa se o emailOrCpf é um número inteiro (contém apenas dígitos).
-    // Utiliza a expressão regular /^\d+$/ que procura a string começo (^) ate o final ($)
-    // de emailOrCpf, e se ela contém apenas dígitos (\d+)
-    const isCpf = (/^\d+$/).test(emailOrCpf) === null;
-    if(isCpf) {
-      user = await this.userService.findOneByCpf(emailOrCpf);
-      payload = { sub: user?.id, cpf: user?.cpf };
-    } else {
-      user = await this.userService.findOneByEmail(emailOrCpf);
-      payload = { sub: user?.id, email: user?.email };
-    }
-    
-    if(!user) {
-      throw new NotFoundException();
-    }
+  async singIn(emailOrCpf: string, password: string): Promise<AccessToken> {
+    const user = await this.validateUser({ emailOrCpf, password });
 
-    const isPasswrod = await this.bcryptService.compare(password, user.password);
-    if(isPasswrod) {
-      throw new UnauthorizedException();
-    }
-
-    return {
-      accessToken: await this.jwtService.signAsync(payload),
-    };
+    return this.gerateToken(user);
   }
 
   async logout(email: string): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
+  async validateUser(singIn: SingInDto): Promise<User> {
+    let user: User;
+
+    const isCpf = (/^\d+$/).test(singIn.emailOrCpf) === null;
+    if (isCpf) {
+      user = await this.userService.findOneByCpf(singIn.emailOrCpf);
+    } else {
+      user = await this.userService.findOneByEmail(singIn.emailOrCpf);
+    }
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    const isPasswrod = await this.bcryptService.compare(singIn.password, user.password);
+    if (isPasswrod) {
+      throw new UnauthorizedException('User or password invalid');
+    }
+
+    return user;
+  }
+
+  async gerateToken(user: User) {
+
+    const payload = {
+      sub: user.id,
+      email: user.email
+    }
+    const accessToken = await this.jwtService.signAsync(payload);
+
+    const refreshToken = this.jwtService.sign(
+      payload,
+      {
+        secret: 'sua-chave-refresh',
+        expiresIn: '120s',
+      },
+    );
+
+    return { accessToken, refreshToken };
+  }
+
+  async reautenticar(body) {
+    const payload: User = await this.verificarRefreshToken(body);
+    return this.gerateToken(payload);
+  }
+
+  private async verificarRefreshToken(body) {
+    const refreshToken = body.refresh_token;
+
+    if (!refreshToken) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    const email = this.jwtService.decode(refreshToken)['email'];
+    const usuario = await this.userService.findOneByEmail(email);
+
+    if (!usuario) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    try {
+      this.jwtService.verify(refreshToken, {
+        secret: 'sua-chave-refresh',
+      });
+      return usuario;
+    } catch (err) {
+      if (err.name === 'JsonWebTokenError') {
+        throw new UnauthorizedException('Assinatura Inválida');
+      }
+      if (err.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('Token Expirado');
+      }
+      throw new UnauthorizedException(err.name);
+    }
+  }
 }
