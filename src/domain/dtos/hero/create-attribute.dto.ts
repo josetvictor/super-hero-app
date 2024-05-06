@@ -1,9 +1,13 @@
+import { IsNotEmpty, IsNumber, isNumber } from "class-validator";
+
 export class CreateAttributeDto {
-    id: number;
+    @IsNumber()
+    @IsNotEmpty()
+    superheroId: number;
 
-    name: string;
+    @IsNumber()
+    @IsNotEmpty()
+    attributeId: number;
 
-    level: number;
-
-    heroId: number;
+    value: number;
 }

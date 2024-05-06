@@ -18,16 +18,9 @@ export class AttributeController {
         return result;
     }
 
-    @Get()
-    async findAll() {
-        return await this.attributeService.findAll();
-    }
-
     @Get(':id')
-    async findOne(@Param('id') id: string) {
-        const result = await this.attributeService.findOne(+id);
-        if (!result) throw new NotFoundException();
-        return result;
+    async findAllAttributesForHero(@Param('id') id: number) {
+        return await this.attributeService.findAllAtributesForHero(id);
     }
 
     @Patch(':id')
