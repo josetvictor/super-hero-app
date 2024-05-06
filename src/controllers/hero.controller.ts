@@ -23,13 +23,6 @@ export class HeroController {
         return await this.heroService.findAll();
     }
 
-    @Get(':id')
-    async findOne(@Param('id') id: string) {
-        const result = await this.heroService.findOne(+id);
-        if (!result) throw new NotFoundException();
-        return result;
-    }
-
     @Patch(':id')
     async update(@Param('id') id: string, @Body() updateHeroDto: UpdateHeroDto) {
         const result = await this.heroService.update(+id, updateHeroDto);

@@ -10,31 +10,31 @@ export class CreateHeroDto {
 
     @IsNumber()
     @ValidateIf((object, value) => value !== null)
-    gender_id!: number | null;
+    genderId!: number | null;
 
     @IsNumber()
     @ValidateIf((object, value) => value !== null)
-    eye_colour_id!: number | null;
+    eyeColourId!: number | null;
 
     @IsNumber()
     @ValidateIf((object, value) => value !== null)
-    hair_colour_id!: number | null;
+    hairColourId!: number | null;
 
     @IsNumber()
     @ValidateIf((object, value) => value !== null)
-    skin_colour_id!: number | null;
+    skinColourId!: number | null;
 
     @IsNumber()
     @ValidateIf((object, value) => value !== null)
-    race_id!: number | null;
+    raceId!: number | null;
 
     @IsNumber()
     @ValidateIf((object, value) => value !== null)
-    publisher_id!: number | null;
+    publisherId!: number | null;
 
     @IsNumber()
     @ValidateIf((object, value) => value !== null)
-    alignment_id!: number | null;
+    alignmentId!: number | null;
 
     @IsNumber()
     height_cm: number;
