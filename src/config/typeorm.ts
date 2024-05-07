@@ -12,12 +12,14 @@ const config = {
     username: `${process.env.DATABASE_USERNAME}`,
     password: `${process.env.DATABASE_PASSWORD}`,
     database: `${process.env.DATABASE_NAME}`,
-    entities: [`${__dirname}/domain/entities/*.entity{.ts,.js}`],
-    migrations: [`${__dirname}/migrations/*{.ts,.js}`],
+    entities: [`dist/domain/entities/*.entity{.ts,.js}`],
+    migrations: [`dist/migrations/*{.ts,.js}`],
     autoLoadEntities: true,
     synchronize: false,
     nameingStrategy: new SnakeNamingStrategy()
 };
+
+console.log("console __dirname", __dirname);
 
 export default registerAs('typeorm', () => config);
 export const connectionSource = new DataSource(config as DataSourceOptions);

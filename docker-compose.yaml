@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: senha
+      POSTGRES_DB: db_superhero
+    ports:
+      - "5433:5432"
+  migrations:
+    build: .
+    container_name: migration
+    depends_on:
+      - db
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: senha
+      DATABASE_NAME: db_superhero
+    command: npm run migration:run
+  nestjs:
+    build: .
+    container_name: super-hero-api
+    depends_on:
+      - db
+      - migrations
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: senha
+      DATABASE_NAME: db_superhero
