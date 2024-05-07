@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: senha
       POSTGRES_DB: db_superhero
     ports:
-      - "5433:5432"
+      - "5432:5432"
   migrations:
     build: .
     container_name: migration
